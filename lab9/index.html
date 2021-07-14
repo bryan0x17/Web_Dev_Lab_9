@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Assignment 9</title>
     <link rel="stylesheet" href="lab9.css">
-    <script src="lab9.js"></script>
+    <script src="lab9.js" defer></script>
 </head>
 <body>
     <h1>Client Lookup Tool</h1>
@@ -14,15 +14,15 @@
     <h3>Search Using:</h3>
     <table>
         <tr>
-            <td>Last Name</td>
-            <td><input type="text" id="name"></td>
+            <td><label for="name">Last Name</label></td>
+            <td><input type="text" id="name" autofocus></td>
         </tr>
         <tr>
-            <td>Client ID</td>
+            <td><label for="id">Client ID</label></td>
             <td><input type="text" id="id"></td>
         </tr>
         <tr>
-            <td>Client Phone Number</td>
+            <td><label for="phone">Client Phone Number</label></td>
             <td><input type="text" id="phone"></td>
         </tr>
     </table>
