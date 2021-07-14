@@ -5,7 +5,7 @@ body {
     font-family: 'Roboto Mono', monospace;
     color: rgb(2, 37, 46);
     font-size: 20px;
-    width: 50%;
+    width: 80%;
     margin-left: 10%;
     background-color: aliceblue;
 }
@@ -14,3 +14,19 @@ div {
     font-style: italic;
     font-size: 14px;
 }
+
+#results {
+    border-collapse: collapse;
+}
+
+#results th {
+    border-style: solid;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+}
+#results td {
+    border-style: solid;
+    padding-left: 10px;
+    padding-right: 10px;
+}  

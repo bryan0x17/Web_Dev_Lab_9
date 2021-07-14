@@ -1,18 +1,18 @@
 let dataRequest = new XMLHttpRequest();
 let clientData;
+let numResults;
 
 const searchBy = 'Results using: ';
 
-const searchHeadings = '<tr><th>Client ID</th>'
-    + '<th>First Name</th>'
-    + '<th>Last Name</th>'
-    + '<th>Address</th>'
-    + '<th>Postal Code</th>'
-    + '<th>First Name</th>'
-    + '<th>Phone Number</th>'
-    + '<th>Address</th>'
-    + '<th>Type</th></tr>';
+const searchHeadings = '<th>Client ID</th>'
+					+ '<th>First Name</th>'
+					+ '<th>Last Name</th>'
+					+ '<th>Address</th>'
+					+ '<th>Postal Code</th>'
+					+ '<th>Phone Number</th>'
+					+ '<th>Type</th>';
 
+// Main function called once the page is loaded, sets listeners and reads JSON
 function setEventListeners() {
 	document.getElementById('name').addEventListener('input', function() {searchName(this.value);});
 	document.getElementById('id').addEventListener('input', function() {searchID(this.value);});
@@ -27,100 +27,110 @@ function setEventListeners() {
     dataRequest.send();
 }
 
+// Searches JSON for client name and prints to window (shows all relevant results)
 function searchName(name) {
-	document.getElementById('searchCriteria').textContent = searchBy + 'Name';
-    document.getElementById('searchResults').innerHTML = searchHeadings;
-	let client;
-    let results;
-	for (let i = 0; i < clientData.length; i++) {
-		client = clientData[i];
-		if (client.lastName.startsWith(name)) {
-            results += '<tr><td>';
-            results += client.id;
-            results += '</td><td>';
-            results += client.firstName;
-            results += '</td><td>';
-            results += client.lastName;
-            results += '</td><td>';
-            results += client.address;
-            results += '</td><td>';
-            results += client.postalCode;
-            results += '</td><td>';
-            results += client.phone;
-            results += '</td><td>';
-            results += client.type;
-            results += '</td></tr>';
-		}			
-	}
-    document.getElementById('searchResults').innerHTML += results;
-
-
-}
-function searchIDNumber(idnumber) {
-
-	//var r=JSON.parse(dataRequest.responseText);
-	document.getElementById('searchvalue').innerHTML='Search by ID Number'+'<br>';
-	//structure table
-	var results='<tr><th>Full Name</th><th>Address</th><th>City </th><th>ID Number</th><th>Company</th></tr>';
-	var searchid;
-	for(var i=0; i<r.length; i++)
-	{
-		var client=r[i];
-		searchid=client.idnumber;
-		if(searchid.startsWith(idnumber))
-		{
-
-			results+='<tr><td>'
-			results+=client.name;
-			results+='</td><td>'
-			results+=client.address
-			results+='</td><td>'
-			results+=client.city
-			results+='</td><td>'
-			results+=client.idnumber
-			results+='</td><td>'
-			results+=client.company
-			results+='</td></tr>';
+	clearSearch();
+	if (name) {
+		name = name.toLowerCase();
+		numResults = 0;
+		let client;
+		let results = '';
+		for (let i = 0; i < clientData.length; i++) {
+			client = clientData[i];
+			if (client.lastName.toLowerCase().startsWith(name)) {
+				results += '<tr>' + getClientString(client) + '</tr>';
+				numResults++;
+			}			
 		}
-
+		if (numResults) {
+			document.getElementById('searchCriteria').textContent = searchBy + 'Name';
+			document.getElementById('numResults').textContent = `Showing ${numResults} ${numResults > 1 ? 'matches': 'match'}`;
+			document.getElementById('searchHeadings').innerHTML = searchHeadings;
+    		document.getElementById('searchResults').innerHTML += results;
+		} else {
+			document.getElementById('numResults').textContent = 'No results found';
+		}
+		
 	}
-	document.getElementById('searchresults').innerHTML=results;
+}	
 
-
+// Searches JSON for Client ID and prints to window (shows exact match only)
+function searchID(id) {
+	clearSearch();
+	if (id) {
+		numResults = 0;
+		let client;
+		let results = '';
+		for (let i = 0; i < clientData.length; i++) {
+			client = clientData[i];
+			if (client.id == id) {
+				results += '<tr>' + getClientString(client) + '</tr>';
+				numResults++;
+			}
+		}
+    	if (numResults) {
+			document.getElementById('searchCriteria').textContent = searchBy + 'Client ID';
+			document.getElementById('numResults').textContent = `Showing ${numResults} ${numResults > 1 ? 'matches': 'match'}`;
+			document.getElementById('searchHeadings').innerHTML = searchHeadings;
+    		document.getElementById('searchResults').innerHTML += results;
+		} else {
+			document.getElementById('numResults').textContent = 'No results found';
+		}
+	}
 }
 
-function searchCompanyName(company) {
-
-	//var r=JSON.parse(dataRequest.responseText);
-	document.getElementById('searchvalue').innerHTML='Search by Company name'+'<br>';
-	//structure table
-	var results='<tr><th>Full Name</th><th>Address</th><th>City </th><th>ID Number</th><th>Company</th></tr>';
-	var searchcompany;
-	for(var i=0; i<r.length; i++)
-	{
-		var client=r[i];
-		searchcompany=client.company;
-		if(searchcompany.startsWith(company))
-		{
-
-			results+='<tr><td>'
-			results+=client.name;
-			results+='</td><td>'
-			results+=client.address
-			results+='</td><td>'
-			results+=client.city
-			results+='</td><td>'
-			results+=client.idnumber
-			results+='</td><td>'
-			results+=client.company
-			results+='</td></tr>';
+// Searches JSON for client phone and prints to window (shows all relevant results)
+function searchPhone(phone) {
+	clearSearch();
+	if (phone) {
+		numResults = 0;
+		let client;
+		let results = '';
+		for (let i = 0; i < clientData.length; i++) {
+			client = clientData[i];
+			if (client.phone.replaceAll('-', '').includes(phone.replaceAll('-', ''))) {
+				results += '<tr>' + getClientString(client) + '</tr>';
+				numResults++;
+			}			
 		}
-
+    	if (numResults) {
+			document.getElementById('searchCriteria').textContent = searchBy + 'Name';
+			document.getElementById('numResults').textContent = `Showing ${numResults} ${numResults > 1 ? 'matches': 'match'}`;
+			document.getElementById('searchHeadings').innerHTML = searchHeadings;
+    		document.getElementById('searchResults').innerHTML += results;
+		} else {
+			document.getElementById('numResults').textContent = 'No results found';
+		}
 	}
-	document.getElementById('searchresults').innerHTML=results;
+}
 
+// Clears the window of search results and table headings
+function clearSearch() {
+	document.getElementById('searchCriteria').textContent = '';
+	document.getElementById('numResults').textContent = '';
+	document.getElementById('searchHeadings').innerHTML = '';
+	document.getElementById('searchResults').innerHTML = '';
+}
 
+// Converts the client object to an innerHTML string
+function getClientString(client) {
+	let clientString;
+	clientString = '<td>';
+	clientString += client.id;
+	clientString += '</td><td>';
+	clientString += client.firstName;
+	clientString += '</td><td>';
+	clientString += client.lastName;
+	clientString += '</td><td>';
+	clientString += client.address;
+	clientString += '</td><td>';
+	clientString += client.postalCode;
+	clientString += '</td><td>';
+	clientString += client.phone;
+	clientString += '</td><td>';
+	clientString += client.type;
+	clientString += '</td>';
+	return clientString;
 }
 
 setEventListeners();
-document.getElementById('searchResults').innerHTML = searchHeadings;
